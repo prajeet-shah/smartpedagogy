@@ -1,11 +1,36 @@
+import Header from "./components/Header";
+import Home from "./components/Home";
 import "./index.css";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router";
+import Signup from "./components/Signup";
+import Footer from "./components/Footer";
+import Login from "./components/Login";
+import { Provider } from "react-redux";
+import appStore from "./utils/appStore";
 
 function App() {
+  const AppLayout = () => {
+    return (
+      <div>
+        <Header />
+        <Outlet />
+        <Footer />
+      </div>
+    );
+  };
+
   return (
-    <div>
-      <h1 className="text-2xl bg-yellow-500 ">hello world</h1>
-      <div className="text-5xl bg-amber-700">how are you????</div>
-    </div>
+    <Provider store={appStore}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<AppLayout />}>
+            <Route index element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 }
 
