@@ -3,7 +3,6 @@ const User = require("../schema/user");
 
 const Auth = async (req, res, next) => {
   try {
-    console.log(req.cookies);
     const { token } = req.cookies;
     if (!token)
       return res.status(401).json({ message: "token is not valid...." });

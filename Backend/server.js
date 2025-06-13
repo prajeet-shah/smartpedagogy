@@ -4,10 +4,12 @@ const server = express();
 const connectDB = require("./src/config/database");
 const authRouter = require("./src/routes/authRoute");
 const cookieParser = require("cookie-parser");
+const profileRouter = require("./src/routes/profileRoute");
 
 server.use(cookieParser());
 server.use(express.json());
 server.use("/", authRouter);
+server.use("/", profileRouter);
 
 server.use("/", (req, res) => {
   res.send("server is running...");
