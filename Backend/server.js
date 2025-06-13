@@ -6,6 +6,13 @@ const authRouter = require("./src/routes/authRoute");
 const cookieParser = require("cookie-parser");
 const profileRouter = require("./src/routes/profileRoute");
 
+server.use(
+  cors({
+    origin: "http://localhost:5173", // Your frontend URL
+    credentials: true, // Allow cookies to be sent
+  })
+);
+
 server.use(cookieParser());
 server.use(express.json());
 server.use("/", authRouter);
