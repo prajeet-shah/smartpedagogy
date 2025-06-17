@@ -1,7 +1,9 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { BASE_URL } from "../utils/constants";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -10,19 +12,28 @@ export default function SignupPage() {
   const [role, setRole] = useState("Student");
   const [showPassword, setShowPassword] = useState(false);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleSignup = async (e) => {
-    e.preventDefault();
+    try {
+      e.preventDefault();
 
-    let res = await axios.post(
-      BASE_URL + "/signup",
-      { name, email, password, role },
-      { withCredentials: true }
-    );
+      let res = await axios.post(
+        BASE_URL + "/signup",
+        { name, email, password, role },
+        { withCredentials: true }
+      );
 
-    console.log(res.data);
+      dispatch(addUser(res?.data?.user));
+      navigate("/");
+      console.log(res.data);
 
-    console.log("Signup Info:", { name, email, password, role });
-    // Add your signup logic here
+      console.log("Signup Info:", { name, email, password, role });
+      // Add your signup logic here
+    } catch (err) {
+      console.error("ERROR: ", err.message);
+      navigate("/signup");
+    }
   };
 
   return (

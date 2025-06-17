@@ -1,15 +1,37 @@
+import axios from "axios";
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { BASE_URL } from "../utils/constants";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Logging in with", { email, password });
-    // Add login logic here
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+
+      let res = await axios.post(
+        BASE_URL + "/login",
+        { email, password },
+        { withCredentials: true }
+      );
+
+      dispatch(addUser(res?.data));
+      navigate("/");
+      console.log(res?.data?.user);
+
+      // Add login logic here
+    } catch (err) {
+      navigate("/login");
+      console.error("error: ", err.message);
+    }
   };
 
   return (
