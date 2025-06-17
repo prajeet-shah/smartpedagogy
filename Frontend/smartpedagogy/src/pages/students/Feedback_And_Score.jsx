@@ -1,11 +1,13 @@
-import React from 'react'
+import React from "react";
 
 const Feedback_And_Score = () => {
   return (
     <div>
-      Feedback_And_Score
+      <div >
+        Feedback_And_Score
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Feedback_And_Score
+export default Feedback_And_Score;
