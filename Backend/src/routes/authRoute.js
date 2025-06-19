@@ -7,29 +7,47 @@ const Auth = require("../middleware/auth");
 
 authRouter.post("/signup", async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    let { name, email, password, role, subject } = req.body;
 
-    // check the existing user;
+    // Check if the user already exists
     const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(409).json({ message: "user already existed!!" });
+    if (existingUser) {
+      return res.status(409).json({ message: "User already exists!" });
+    }
 
-    // hash the password
+    // Validate role and subject
+    if (role === "Teacher" && (!subject || subject.trim() === "")) {
+      return res.status(400).json({ message: "Subject is required for teachers." });
+    }
+
+    if (role === "Student") {
+      subject = null; // ensure subject is null for students
+    }
+
+    // Hash the password
     const passwordHash = await bcrypt.hash(password, 10);
 
+    // Create the new user
     const user = new User({
       name,
       email,
       password: passwordHash,
       role,
+      subject,
     });
 
     await user.save();
 
-    // generating the token
+    // Generate token
     const privateKey = process.env.JWT_PRIVATE_KEY;
     const token = jwt.sign({ id: user._id }, privateKey);
-    res.cookie("token", token);
+
+    // Send cookie and response
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // recommended
+    });
+
     res.status(201).json({
       message: "User registered successfully",
       user: {
@@ -37,24 +55,27 @@ authRouter.post("/signup", async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        subject: user.subject,
       },
     });
   } catch (err) {
-    console.error("Error: ", err.message);
+    console.error("Signup Error: ", err.message);
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 
 authRouter.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password)
-      return res.status(400).json({ message: "Email and password are required" });
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
 
     const user = await User.findOne({ email });
-    if (!user)
-      return res.status(401).json({ message: "Invalid credentials" });
+    if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
@@ -78,6 +99,7 @@ authRouter.post("/login", async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        subject: user.subject,
       },
     });
   } catch (err) {
@@ -85,7 +107,6 @@ authRouter.post("/login", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
 
 authRouter.post("/logout", async (req, res) => {
   res.cookie("token", "", {
@@ -140,7 +161,9 @@ authRouter.patch("/forget-password", async (req, res) => {
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "User not found with this email" });
+      return res
+        .status(404)
+        .json({ message: "User not found with this email" });
     }
 
     // Match passwords
@@ -166,6 +189,5 @@ authRouter.patch("/forget-password", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
 
 module.exports = authRouter;

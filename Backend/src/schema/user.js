@@ -26,6 +26,20 @@ const userSchema = new mongoose.Schema(
       },
       required: true,
     },
+    subject: {
+      type: String,
+      trim: true,
+      validate: {
+        validator: function (value) {
+          // 'this' refers to the document
+          if (this.role === "Teacher") {
+            return value != null && value.length > 0;
+          }
+          return true; // if not a Teacher, subject is not required
+        },
+        message: "Subject is required for users with the role 'Teacher'",
+      },
+    },
   },
   { timestamps: true }
 );

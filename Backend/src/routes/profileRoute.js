@@ -1,9 +1,8 @@
-const express = require('express');
-const Auth = require('../middleware/auth');
-const User = require('../schema/user');
+const express = require("express");
+const Auth = require("../middleware/auth");
+const User = require("../schema/user");
 
 const profileRouter = express.Router();
-
 
 // GET /profile
 profileRouter.get("/profile", Auth, async (req, res) => {
@@ -53,7 +52,5 @@ profileRouter.patch("/profile/update", Auth, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
-
 
 module.exports = profileRouter;
