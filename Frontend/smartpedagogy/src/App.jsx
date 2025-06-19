@@ -64,11 +64,26 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/assignments" element={<Assignment />} />
-            <Route path="/classroom-overview" element={<Classroom_Overview />} />
-            <Route path="/performance-dashboard" element={<Performance_Dashboard />} />
-            <Route path="/assignments-overview" element={<Assignment_Overview />} />
-            <Route path="/dashboard-overview" element={<Dashboard_Overview />} />
-            <Route path="/feedback-and-score" element={<Feedback_And_Score />} />
+            <Route
+              path="/classroom-overview"
+              element={<Classroom_Overview />}
+            />
+            <Route
+              path="/performance-dashboard"
+              element={<Performance_Dashboard />}
+            />
+            <Route
+              path="/assignments-overview"
+              element={<Assignment_Overview />}
+            />
+            <Route
+              path="/dashboard-overview"
+              element={<Dashboard_Overview />}
+            />
+            <Route
+              path="/feedback-and-score"
+              element={<Feedback_And_Score />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>

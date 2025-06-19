@@ -10,28 +10,33 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("Student");
+  const [subject, setSubject] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleSignup = async (e) => {
-    try {
-      e.preventDefault();
 
-      let res = await axios.post(
-        BASE_URL + "/signup",
-        { name, email, password, role },
-        { withCredentials: true }
-      );
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    try {
+      const payload = {
+        name,
+        email,
+        password,
+        role,
+        ...(role === "Teacher" && { subject }),
+      };
+
+      const res = await axios.post(`${BASE_URL}/signup`, payload, {
+        withCredentials: true,
+      });
 
       dispatch(addUser(res?.data?.user));
       navigate("/");
-      console.log(res.data);
-
-      console.log("Signup Info:", { name, email, password, role });
-      // Add your signup logic here
+      console.log("Signup Info:", payload);
     } catch (err) {
-      console.error("ERROR: ", err.message);
+      console.error("ERROR: ", err.response?.data?.message || err.message);
       navigate("/signup");
     }
   };
@@ -44,7 +49,7 @@ export default function SignupPage() {
         </h2>
 
         <form onSubmit={handleSignup} className="space-y-4">
-          {/* Name Input */}
+          {/* Name */}
           <div className="form-control">
             <label className="label">
               <span className="label-text">Full Name</span>
@@ -59,7 +64,7 @@ export default function SignupPage() {
             />
           </div>
 
-          {/* Email Input */}
+          {/* Email */}
           <div className="form-control">
             <label className="label">
               <span className="label-text">Email</span>
@@ -74,7 +79,7 @@ export default function SignupPage() {
             />
           </div>
 
-          {/* Password Input */}
+          {/* Password */}
           <div className="form-control">
             <label className="label">
               <span className="label-text">Password</span>
@@ -98,7 +103,7 @@ export default function SignupPage() {
             </div>
           </div>
 
-          {/* Role Selector */}
+          {/* Role */}
           <div className="form-control">
             <label className="label">
               <span className="label-text">Role</span>
@@ -109,12 +114,29 @@ export default function SignupPage() {
               onChange={(e) => setRole(e.target.value)}
               required
             >
-              <option>Student</option>
-              <option>Teacher</option>
+              <option value="Student">Student</option>
+              <option value="Teacher">Teacher</option>
             </select>
           </div>
 
-          {/* Signup Button */}
+          {/* Subject (only for Teachers) */}
+          {role === "Teacher" && (
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Subject</span>
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Mathematics"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                className="input input-bordered w-full"
+                required={role === "Teacher"}
+              />
+            </div>
+          )}
+
+          {/* Submit */}
           <button type="submit" className="btn btn-primary w-full">
             Sign Up
           </button>
@@ -123,7 +145,7 @@ export default function SignupPage() {
         <p className="mt-6 text-center text-sm text-base-content">
           Already have an account?{" "}
           <Link
-            to={"/login"}
+            to="/login"
             className="text-primary font-medium hover:underline"
           >
             Login

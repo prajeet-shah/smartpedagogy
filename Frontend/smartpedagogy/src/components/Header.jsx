@@ -1,14 +1,17 @@
 import axios from "axios";
 import { Link } from "react-router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "../utils/constants";
+import { removeUser } from "../utils/userSlice";
 
 const Header = () => {
   const user = useSelector((store) => store.user);
+  const dispatch = useDispatch();
 
   const handleLogout = async () => {
     let res = axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
     console.log(res.data);
+    dispatch(removeUser());
   };
 
   return (

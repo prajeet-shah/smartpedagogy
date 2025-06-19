@@ -23,7 +23,7 @@ export default function Login() {
         { withCredentials: true }
       );
 
-      dispatch(addUser(res?.data));
+      dispatch(addUser(res?.data?.user));
       navigate("/");
       console.log(res?.data?.user);
 
