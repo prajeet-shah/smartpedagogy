@@ -31,7 +31,7 @@ assignmentRouter.post("/add-assignment", Auth, async (req, res) => {
 });
 
 // GET /api/assignments — Get all assignments
-assignmentRouter.get("/all-assignment", Auth, async (req, res) => {
+assignmentRouter.get("/all-assignments", Auth, async (req, res) => {
   try {
     const id = req.user._id;
     const assignments = await Assignment.find({ createdBy: id }).populate(
@@ -46,7 +46,7 @@ assignmentRouter.get("/all-assignment", Auth, async (req, res) => {
 });
 
 // GET /api/assignments/:id — Get a specific assignment
-assignmentRouter.get("assignment/:id", Auth, async (req, res) => {
+assignmentRouter.get("/assignment/:id", Auth, async (req, res) => {
   try {
     const assignment = await Assignment.findById(req.params.id).populate(
       "createdBy",
@@ -62,8 +62,40 @@ assignmentRouter.get("assignment/:id", Auth, async (req, res) => {
   }
 });
 
+// PUT /api/assignments/:id — Update assignment
+assignmentRouter.patch("/update-assignment/:id", async (req, res) => {
+  try {
+    const { title, description, file, dueDate } = req.body;
+
+    const updatedFields = {};
+    if (title) updatedFields.title = title;
+    if (description) updatedFields.description = description;
+    if (file) updatedFields.file = file;
+    if (dueDate) updatedFields.dueDate = dueDate;
+
+    const assignment = await Assignment.findByIdAndUpdate(
+      req.params.id,
+      { $set: updatedFields },
+      { new: true, runValidators: true }
+    );
+
+    if (!assignment) {
+      return res.status(404).json({ message: "Assignment not found" });
+    }
+
+    res.status(200).json({
+      message: "Assignment updated successfully",
+      assignment,
+    });
+  } catch (err) {
+    console.error("Update Assignment Error:", err.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
 // DELETE /api/assignments/:id — Delete assignment
-assignmentRouter.delete("delete-assignment/:id", Auth, async (req, res) => {
+assignmentRouter.delete("/delete-assignment/:id", Auth, async (req, res) => {
   try {
     const assignment = await Assignment.findByIdAndDelete(req.params.id);
     if (!assignment)

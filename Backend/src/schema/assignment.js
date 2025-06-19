@@ -9,12 +9,12 @@ const assignmentSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: [true, "Description is required"],
+      
       trim: true,
     },
     file: {
       type: String, // base64 string
-      required: [true, "Assignment file is required"],
+      
     },
     dueDate: {
       type: Date,
