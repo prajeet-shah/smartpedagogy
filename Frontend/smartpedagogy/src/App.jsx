@@ -7,6 +7,7 @@ import {
   Route,
   Outlet,
   useNavigate,
+  useLocation,
 } from "react-router";
 import Signup from "./components/Signup";
 import Footer from "./components/Footer";
@@ -23,11 +24,14 @@ import Performance_Dashboard from "./pages/teachers/Performance_Dashboard";
 import Assignment_Overview from "./pages/students/Assignment_Overview";
 import Dashboard_Overview from "./pages/students/Dashboard_Overview";
 import Feedback_And_Score from "./pages/students/Feedback_And_Score";
+import Edit_Assignment from "./pages/teachers/Edit_Assignment";
+import AssignmentDetails from "./pages/teachers/components/AssignmentDetails";
 
 function App() {
   const AppLayout = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
     useEffect(() => {
       getProfile();
     }, []);
@@ -39,7 +43,7 @@ function App() {
         });
 
         dispatch(addUser(res?.data?.user));
-        navigate("/");
+        navigate(location.pathname, { replace: true });
       } catch (err) {
         navigate("/login");
         console.error("ERROR: ", err.message);
@@ -83,6 +87,11 @@ function App() {
             <Route
               path="/feedback-and-score"
               element={<Feedback_And_Score />}
+            />
+            <Route path="/edit-assignment/:id" element={<Edit_Assignment />} />
+            <Route
+              path="/assignment-details/:id"
+              element={<AssignmentDetails />}
             />
           </Route>
         </Routes>

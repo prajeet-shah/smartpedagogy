@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { BASE_URL } from "../../utils/constants";
+import ShowAssignments from "./components/ShowAssignments";
 
 export default function AssignmentForm() {
   const [title, setTitle] = useState("");
@@ -32,7 +33,7 @@ export default function AssignmentForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!title || !description || !base64File || !dueDate) {
+    if (!title || !dueDate) {
       alert("All fields including a valid file and due date are required.");
       return;
     }
@@ -59,8 +60,8 @@ export default function AssignmentForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
-      <div className="w-full max-w-2xl bg-white shadow-lg rounded-xl p-8 space-y-6">
+    <div className="min-h-screen px-4 py-8 bg-gradient-to-br from-blue-100 via-white to-purple-100">
+      <div className="w-full mx-auto max-w-2xl bg-white shadow-lg rounded-xl p-8 space-y-6">
         <h2 className="text-3xl font-bold text-center text-primary">
           {" "}
           Assignment
@@ -93,7 +94,7 @@ export default function AssignmentForm() {
               onChange={(e) => setDescription(e.target.value)}
               className="textarea textarea-bordered w-full border border-gray-300 rounded-lg px-4 py-2"
               rows={4}
-              required
+             
             />
           </div>
 
@@ -107,7 +108,7 @@ export default function AssignmentForm() {
               accept=".pdf, .jpg, .jpeg"
               onChange={handleFileChange}
               className="file-input file-input-bordered w-full max-w-full"
-              required
+             
             />
             {file && (
               <p className="mt-2 text-sm text-green-600">
@@ -138,6 +139,9 @@ export default function AssignmentForm() {
             Add Assignment
           </button>
         </form>
+      </div>
+      <div className="my-10">
+        <ShowAssignments />
       </div>
     </div>
   );
