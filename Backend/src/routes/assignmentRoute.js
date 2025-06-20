@@ -30,8 +30,8 @@ assignmentRouter.post("/add-assignment", Auth, async (req, res) => {
   }
 });
 
-// GET /api/assignments — Get all assignments
-assignmentRouter.get("/all-assignments", Auth, async (req, res) => {
+// GET /api/assignments — Get all assignments of particular teacher
+assignmentRouter.get("/teacher-assignments", Auth, async (req, res) => {
   try {
     const id = req.user._id;
     const assignments = await Assignment.find({ createdBy: id }).populate(
@@ -42,6 +42,18 @@ assignmentRouter.get("/all-assignments", Auth, async (req, res) => {
   } catch (err) {
     console.error("Fetch Assignments Error:", err.message);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// GET all the assignments to the students assignment section
+assignmentRouter.get("/all-assignments", Auth, async (req, res) => {
+  try {
+    const assignments = await Assignment.find();
+
+    res.status(200).json(assignments);
+  } catch (err) {
+    console.error("ERROR:", err.message);
+    res.status(500).json({ message: err.message });
   }
 });
 
@@ -92,7 +104,6 @@ assignmentRouter.patch("/update-assignment/:id", async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 });
-
 
 // DELETE /api/assignments/:id — Delete assignment
 assignmentRouter.delete("/delete-assignment/:id", Auth, async (req, res) => {
