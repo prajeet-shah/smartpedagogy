@@ -14,7 +14,7 @@ export default function Assignment() {
   // 🔄 Fetch assignments once or when called manually
   const fetchAssignments = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/all-assignments`, {
+      const res = await axios.get(`${BASE_URL}/teacher-assignments`, {
         withCredentials: true,
       });
       setAssignments(res.data);
