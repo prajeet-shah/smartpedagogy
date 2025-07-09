@@ -6,6 +6,7 @@ const authRouter = require("./src/routes/authRoute");
 const cookieParser = require("cookie-parser");
 const profileRouter = require("./src/routes/profileRoute");
 const assignmentRouter = require("./src/routes/assignmentRoute");
+const submissionRouter = require("./src/routes/submissionRoute");
 
 server.use(
   cors({
@@ -20,6 +21,7 @@ server.use(express.json({ limit: "10mb" }));
 server.use("/", authRouter);
 server.use("/", profileRouter);
 server.use("/", assignmentRouter);
+server.use("/",submissionRouter);
 
 server.use("/", (req, res) => {
   res.send("server is running...");

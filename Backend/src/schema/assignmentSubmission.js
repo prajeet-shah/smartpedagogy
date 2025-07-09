@@ -23,17 +23,6 @@ const assignmentSubmissionSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    status: {
-      type: String,
-      enum: ["pending", "submitted"],
-      default: "submitted",
-    },
-    grade: {
-      type: String,
-    },
-    feedback: {
-      type: String,
-    },
   },
   { timestamps: true }
 );
