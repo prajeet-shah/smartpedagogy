@@ -15,7 +15,8 @@ const AssignmentSubmission = ({ assignment }) => {
 
     if (!file) return;
 
-    const isValidType = file.type === "application/pdf" || file.type === "image/jpeg";
+    const isValidType =
+      file.type === "application/pdf" || file.type === "image/jpeg";
     if (!isValidType) {
       setError("Only JPG and PDF files are allowed.");
       return;
@@ -61,8 +62,15 @@ const AssignmentSubmission = ({ assignment }) => {
         setFileName("");
       }
     } catch (err) {
-      setError("Failed to submit assignment.");
-      console.error(err);
+      if (err.response?.status === 409) {
+        setError("You've already submitted this assignment.");
+        setComments("");
+        setFileBase64("");
+        setFileName("");
+      } else {
+        setError("Failed to submit assignment.");
+        console.error(err);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -72,8 +80,12 @@ const AssignmentSubmission = ({ assignment }) => {
     <div className="max-w-2xl mx-auto space-y-4">
       <h2 className="text-2xl font-bold text-primary">Submit Assignment</h2>
       <div className="bg-base-200 p-4 rounded shadow">
-        <h3 className="text-lg font-semibold text-secondary">{assignment.title}</h3>
-        <p className="text-sm text-base-content/80 mb-2">{assignment.description}</p>
+        <h3 className="text-lg font-semibold text-secondary">
+          {assignment.title}
+        </h3>
+        <p className="text-sm text-base-content/80 mb-2">
+          {assignment.description}
+        </p>
         <p className="text-xs mb-4">
           <span className="font-semibold">Due:</span>{" "}
           {new Date(assignment.dueDate).toLocaleDateString()}
@@ -82,7 +94,9 @@ const AssignmentSubmission = ({ assignment }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="label">
-              <span className="label-text">Upload your file (JPG or PDF only)</span>
+              <span className="label-text">
+                Upload your file (JPG or PDF only)
+              </span>
             </label>
             <input
               type="file"
@@ -114,7 +128,11 @@ const AssignmentSubmission = ({ assignment }) => {
             {submitting ? "Submitting..." : "Submit"}
           </button>
 
-          {success && <p className="text-success mt-2">Assignment submitted successfully!</p>}
+          {success && (
+            <p className="text-success mt-2">
+              Assignment submitted successfully!
+            </p>
+          )}
         </form>
       </div>
     </div>

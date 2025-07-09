@@ -10,19 +10,20 @@ const Assignment_Overview = () => {
   const [selectedAssignment, setSelectedAssignment] = useState(null);
   const navigate = useNavigate();
 
+  const fetchAssignments = async () => {
+    try {
+      const response = await axios.get(BASE_URL + "/all-assignments", {
+        withCredentials: true,
+      });
+      setAssignments(response.data);
+    } catch (error) {
+      console.error("Error fetching assignments:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   useEffect(() => {
-    const fetchAssignments = async () => {
-      try {
-        const response = await axios.get(BASE_URL + "/all-assignments", {
-          withCredentials: true,
-        });
-        setAssignments(response.data);
-      } catch (error) {
-        console.error("Error fetching assignments:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
     fetchAssignments();
   }, []);
