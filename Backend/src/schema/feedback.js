@@ -22,6 +22,9 @@ const feedbackSchema = new mongoose.Schema(
         },
       },
     ],
+    overallFeedback: {
+      type: String,
+    },
     generatedAt: {
       type: Date,
       default: Date.now,

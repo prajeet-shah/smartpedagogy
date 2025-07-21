@@ -19,6 +19,7 @@ submissionRouter.post("/submit-assignment", Auth, async (req, res) => {
         .json({ message: "Assignment ID and file are required." });
     }
 
+    // Check for duplicate submission
     const existing = await AssignmentSubmission.findOne({
       studentId: req.user._id,
       assignmentId,
@@ -27,6 +28,7 @@ submissionRouter.post("/submit-assignment", Auth, async (req, res) => {
       return res.status(409).json({ message: "Assignment already submitted." });
     }
 
+    // Save assignment submission
     const submission = await AssignmentSubmission.create({
       studentId: req.user._id,
       assignmentId,
@@ -34,39 +36,41 @@ submissionRouter.post("/submit-assignment", Auth, async (req, res) => {
       comments,
     });
 
-    const assignment = await Assignment.findById(
-      assignmentId
-    );
-    //console.log(assignment);
+    // Extract teacher's expected questions
+    const assignment = await Assignment.findById(assignmentId);
     const teacherQuestions = await extractTeacherQuestions(assignment);
-    console.log("teacher given questions");
-    console.log(teacherQuestions);
+    console.log("Teacher questions:", teacherQuestions);
+
+    // Extract student Q&A from uploaded file
     const studentQnA = await extractQnA(fileBase64);
-    console.log("students provided questions")
-    console.log(studentQnA);
+    console.log("Student Q&A:", studentQnA);
+
+    // Calculate completeness
     const completenessScore =
       Number(calculateCompleteness(teacherQuestions, studentQnA)) || 0;
-    console.log(completenessScore);
+    console.log("Completeness score:", completenessScore);
 
+    // Evaluate each Q&A with Gemini
+    const evaluations = [];
 
-  const evaluations = [];
+    for (const item of studentQnA) {
+      const aiFeedback = await evaluateWithGemini(item.question, item.answer);
 
-for (const item of studentQnA) {
-  const aiFeedback = await evaluateWithGemini(item.question, item.answer);
-  evaluations.push({
-    question: item.question,
-    answer: item.answer,
-    feedback: {
-      ...aiFeedback,
-      completeness: completenessScore,
-    },
-  });
+      evaluations.push({
+        question: item.question,
+        answer: item.answer,
+        feedback: {
+          ...aiFeedback,
+          completeness: completenessScore, // Override AI's completeness
+        },
+        overallFeedback: aiFeedback.overallComment || "No overall feedback.",
+      });
 
-  // optional: delay to avoid hitting rate limits
-  await new Promise((resolve) => setTimeout(resolve, 1500)); // 500ms delay
-}
+      // Optional delay to avoid Gemini rate-limiting
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    }
 
-
+    // Save feedback to DB
     await Feedback.create({
       submissionId: submission._id,
       evaluations,
