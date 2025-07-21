@@ -1,3 +1,5 @@
+// 📁 utils/geminiEval.js
+
 const axios = require("axios");
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
@@ -28,11 +30,7 @@ accuracy, completeness, creativity, reasoning, writingQuality, instructionFollow
     const response = await axios.post(
       `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
       {
-        contents: [
-          {
-            parts: [{ text: prompt }],
-          },
-        ],
+        contents: [{ parts: [{ text: prompt }] }],
       },
       {
         headers: {
@@ -52,12 +50,12 @@ accuracy, completeness, creativity, reasoning, writingQuality, instructionFollow
 
     return {
       accuracy: Number(parsed.accuracy) || 0,
-      completeness: Number(parsed.completeness) || 0, // will be overridden
+      completeness: Number(parsed.completeness) || 0,
       creativity: Number(parsed.creativity) || 0,
       reasoning: Number(parsed.reasoning) || 0,
       writingQuality: Number(parsed.writingQuality) || 0,
       instructionFollowing: Number(parsed.instructionFollowing) || 0,
-      overallComment: parsed.overallComment || "No comment",
+      overallComment: parsed.overallComment || "No comment provided.",
     };
   } catch (err) {
     console.error("Gemini API error:", err.message);

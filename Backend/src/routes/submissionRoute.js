@@ -1,3 +1,5 @@
+// 📁 routes/submissionRoute.js
+
 const express = require("express");
 const submissionRouter = express.Router();
 const Auth = require("../middleware/auth");
@@ -14,21 +16,23 @@ submissionRouter.post("/submit-assignment", Auth, async (req, res) => {
     const { assignmentId, fileBase64, comments } = req.body;
 
     if (!assignmentId || !fileBase64) {
-      return res
-        .status(400)
-        .json({ message: "Assignment ID and file are required." });
+      return res.status(400).json({
+        message: "Assignment ID and file are required.",
+      });
     }
 
-    // Check for duplicate submission
     const existing = await AssignmentSubmission.findOne({
       studentId: req.user._id,
       assignmentId,
     });
+
     if (existing) {
-      return res.status(409).json({ message: "Assignment already submitted." });
+      return res.status(409).json({
+        message: "Assignment already submitted.",
+      });
     }
 
-    // Save assignment submission
+    // Save the assignment submission
     const submission = await AssignmentSubmission.create({
       studentId: req.user._id,
       assignmentId,
@@ -36,21 +40,14 @@ submissionRouter.post("/submit-assignment", Auth, async (req, res) => {
       comments,
     });
 
-    // Extract teacher's expected questions
+    // Extract teacher and student questions
     const assignment = await Assignment.findById(assignmentId);
     const teacherQuestions = await extractTeacherQuestions(assignment);
-    console.log("Teacher questions:", teacherQuestions);
-
-    // Extract student Q&A from uploaded file
     const studentQnA = await extractQnA(fileBase64);
-    console.log("Student Q&A:", studentQnA);
 
-    // Calculate completeness
     const completenessScore =
       Number(calculateCompleteness(teacherQuestions, studentQnA)) || 0;
-    console.log("Completeness score:", completenessScore);
 
-    // Evaluate each Q&A with Gemini
     const evaluations = [];
 
     for (const item of studentQnA) {
@@ -61,24 +58,27 @@ submissionRouter.post("/submit-assignment", Auth, async (req, res) => {
         answer: item.answer,
         feedback: {
           ...aiFeedback,
-          completeness: completenessScore, // Override AI's completeness
+          completeness: completenessScore,
         },
-        overallFeedback: aiFeedback.overallComment || "No overall feedback.",
       });
 
-      // Optional delay to avoid Gemini rate-limiting
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500)); // Delay to avoid rate limits
     }
 
-    // Save feedback to DB
+    // Combine all individual feedback into a summary
+    const overallFeedback = evaluations
+      .map((ev) => `• ${ev.feedback.overallComment}`)
+      .join(" ");
+
     await Feedback.create({
       submissionId: submission._id,
       evaluations,
+      overallFeedback,
     });
 
-    return res
-      .status(201)
-      .json({ message: "Assignment submitted and evaluated successfully." });
+    return res.status(201).json({
+      message: "Assignment submitted and evaluated successfully.",
+    });
   } catch (err) {
     console.error("Error in /submit-assignment:", err.message);
     res.status(500).json({ message: "Server error." });
