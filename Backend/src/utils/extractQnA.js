@@ -41,7 +41,7 @@ async function extractQnA(fileBase64) {
       const question = match[1].trim().replace(/\n/g, " ");
       const answer = match[2].trim().replace(/\n/g, " ");
       if (question && answer) {
-        //console.log({question, answer});
+       // console.log({question, answer});
         qnaList.push({ question, answer });
       }
     }
