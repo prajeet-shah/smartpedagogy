@@ -49,7 +49,7 @@ export default function Assignment() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title || !dueDate || !base64File) {
+    if (!title || !dueDate) {
       alert("All fields are required.");
       return;
     }
