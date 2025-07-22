@@ -8,6 +8,7 @@ const profileRouter = require("./src/routes/profileRoute");
 const assignmentRouter = require("./src/routes/assignmentRoute");
 const submissionRouter = require("./src/routes/submissionRoute");
 const dashboardRouter = require("./src/routes/dashboardRoute");
+const feedbackRouter = require("./src/routes/feedbackRoute");
 require("dotenv").config();
 
 server.use(
@@ -25,6 +26,8 @@ server.use("/", profileRouter);
 server.use("/", assignmentRouter);
 server.use("/", submissionRouter);
 server.use("/", dashboardRouter);
+server.use("/", feedbackRouter);
+
 server.use("/", (req, res) => {
   res.send("server is running...");
 });
