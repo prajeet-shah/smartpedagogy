@@ -26,6 +26,7 @@ import Dashboard_Overview from "./pages/students/Dashboard_Overview";
 import Feedback_And_Score from "./pages/students/Feedback_And_Score";
 import Edit_Assignment from "./pages/teachers/Edit_Assignment";
 import AssignmentDetails from "./pages/teachers/components/AssignmentDetails";
+import ViewSubmission from "./pages/teachers/components/ViewSubmission";
 
 function App() {
   const AppLayout = () => {
@@ -93,6 +94,7 @@ function App() {
               path="/assignment-details/:id"
               element={<AssignmentDetails />}
             />
+            <Route path="/view-submission" element={<ViewSubmission />} />
           </Route>
         </Routes>
       </BrowserRouter>
