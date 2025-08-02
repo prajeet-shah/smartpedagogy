@@ -83,9 +83,11 @@ export default function Login() {
 
           {/* Forgot Password */}
           <div className="text-right">
-            <a href="#" className="text-sm text-primary hover:underline">
-              Forgot password?
-            </a>
+            <Link to={"/forget-password"}>
+              <p className="text-sm text-primary hover:underline">
+                Forgot password?
+              </p>
+            </Link>
           </div>
 
           {/* Login Button */}
