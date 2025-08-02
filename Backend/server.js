@@ -10,12 +10,24 @@ const submissionRouter = require("./src/routes/submissionRoute");
 const dashboardRouter = require("./src/routes/dashboardRoute");
 const feedbackRouter = require("./src/routes/feedbackRoute");
 const classroomRouter = require("./src/routes/classroomRoute");
+const teacherFeedbackInsightsRouter = require("./src/routes/teacherFeedbackRoute");
 require("dotenv").config();
 
+//const ALLOW_ORIGINS = "https://smartpedagogy.vercel.app/";
+
+const ALLOW_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || [
+  "https://smartpedagogy.vercel.app/",
+];
 server.use(
   cors({
-    origin: "http://localhost:5173", // Your frontend URL
-    credentials: true, // Allow cookies to be sent
+    origin: (origin, callback) => {
+      if (!origin || ALLOW_ORIGINS.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
   })
 );
 
@@ -29,6 +41,7 @@ server.use("/", submissionRouter);
 server.use("/", dashboardRouter);
 server.use("/", feedbackRouter);
 server.use("/", classroomRouter);
+server.use("/", teacherFeedbackInsightsRouter);
 
 server.use("/", (req, res) => {
   res.send("server is running...");
