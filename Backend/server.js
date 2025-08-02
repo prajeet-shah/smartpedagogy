@@ -16,15 +16,17 @@ require("dotenv").config();
 //const ALLOW_ORIGINS = "https://smartpedagogy.vercel.app/";
 
 const ALLOW_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") || [
-  "https://smartpedagogy.vercel.app/",
+  "https://smartpedagogy.vercel.app",
+  "http://localhost:5173",
 ];
+
 server.use(
   cors({
     origin: (origin, callback) => {
       if (!origin || ALLOW_ORIGINS.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        callback(new Error("Not allowed by CORS: " + origin));
       }
     },
     credentials: true,
