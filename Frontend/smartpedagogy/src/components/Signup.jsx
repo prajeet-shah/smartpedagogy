@@ -34,7 +34,7 @@ export default function SignupPage() {
 
       dispatch(addUser(res?.data?.user));
       navigate("/");
-      console.log("Signup Info:", payload);
+      //console.log("Signup Info:", payload);
     } catch (err) {
       console.error("ERROR: ", err.response?.data?.message || err.message);
       navigate("/signup");

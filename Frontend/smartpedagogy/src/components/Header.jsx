@@ -10,7 +10,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     let res = axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
-    console.log(res.data);
+    //console.log(res.data);
     dispatch(removeUser());
   };
 

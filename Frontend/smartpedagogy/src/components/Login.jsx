@@ -25,7 +25,7 @@ export default function Login() {
 
       dispatch(addUser(res?.data?.user));
       navigate("/");
-      console.log(res?.data?.user);
+      //console.log(res?.data?.user);
 
       // Add login logic here
     } catch (err) {
