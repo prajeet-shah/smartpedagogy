@@ -6,7 +6,7 @@ const ChangePassword = () => {
   const [form, setForm] = useState({
     currentPassword: "",
     newPassword: "",
-    confirmNewPassword: "",
+    confirmPassword: "",
   });
 
   const [error, setError] = useState("");
@@ -22,7 +22,7 @@ const ChangePassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (form.newPassword !== form.confirmNewPassword) {
+    if (form.newPassword !== form.confirmPassword) {
       return setError("New passwords do not match.");
     }
 
@@ -32,12 +32,13 @@ const ChangePassword = () => {
         {
           currentPassword: form.currentPassword,
           newPassword: form.newPassword,
+          confirmPassword: form.confirmPassword,
         },
         { withCredentials: true }
       );
 
       setSuccess("Password changed successfully!");
-      setForm({ currentPassword: "", newPassword: "", confirmNewPassword: "" });
+      setForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.error || "Something went wrong.");
@@ -92,8 +93,8 @@ const ChangePassword = () => {
             </label>
             <input
               type="password"
-              name="confirmNewPassword"
-              value={form.confirmNewPassword}
+              name="confirmPassword"
+              value={form.confirmPassword}
               onChange={handleChange}
               required
               className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -102,7 +103,7 @@ const ChangePassword = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+            className="w-full bg-blue-600 cursor-pointer text-white py-2 rounded hover:bg-blue-700 transition"
           >
             Update Password
           </button>
