@@ -86,6 +86,7 @@ Create a `.env` file:
 PORT=7777
 MONGODB_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
+GEMINI_API_KEY=your_api_key 
 ```
 
 Start backend server:
