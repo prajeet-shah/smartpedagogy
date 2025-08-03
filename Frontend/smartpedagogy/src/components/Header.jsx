@@ -16,20 +16,21 @@ const Header = () => {
 
   return (
     <div>
-      <div className="navbar bg-base-100 shadow-sm">
+      <div className="navbar bg-gradient-to-r from-indigo-600 to-indigo-800 text-white shadow-sm ">
         <div className="flex-1">
-          <Link to={user ? "/" : "/login"} className="btn btn-ghost text-xl">
+          <Link to={user ? "/" : "/login"} className="btn btn-ghost pointer-cursor text-xl">
             smartpedagogy
           </Link>
         </div>
         {user ? (
           <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Search"
-              className="input input-bordered w-24 md:w-auto"
-            />
-            <div className="dropdown dropdown-end">
+            {/* <input
+            //   type="text"
+            //   placeholder="Search"
+            //   className="input input-bordered w-24 md:w-auto"
+            // /> */}
+            <p className="mx-5 text-xl font-bold my-1">Welcome, {user?.name}</p>
+            <div className="dropdown dropdown-end text-black font-semibold text-xl">
               <div
                 tabIndex={0}
                 role="button"
@@ -46,15 +47,21 @@ const Header = () => {
                 tabIndex={0}
                 className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
               >
-                <li>
-                  <a className="justify-between">
+                {/* <li>
+                 <Link to ={"/profile"} >
+                  <p  className="text-black">
                     Profile
-                    <span className="badge">New</span>
-                  </a>
+                   
+                  </p></Link>
                 </li>
                 <li>
                   <a>Settings</a>
-                </li>
+                </li> */}
+                <Link to={"/change-password"}>
+                  <li>
+                    <p>change password</p>
+                  </li>
+                </Link>
                 <li onClick={handleLogout}>
                   <Link to="/login">Logout</Link>
                 </li>

@@ -29,6 +29,8 @@ import AssignmentDetails from "./pages/teachers/components/AssignmentDetails";
 import ViewSubmission from "./pages/teachers/components/ViewSubmission";
 import ForgetPassword from "./components/ForgetPassword";
 
+import ChangePassword from "./components/ChangePassword";
+
 function App() {
   const AppLayout = () => {
     const dispatch = useDispatch();
@@ -99,6 +101,8 @@ function App() {
             />
             <Route path="/view-submission" element={<ViewSubmission />} />
             <Route path="/forget-password" element={<ForgetPassword />} />
+
+            <Route path="/change-password" element={<ChangePassword />} />
           </Route>
         </Routes>
       </BrowserRouter>
